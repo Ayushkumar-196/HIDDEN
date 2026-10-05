@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --font-heading: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+      /* Dark Theme (Default) */
+      --bg-base: #090d16;
+      --bg-surface: rgba(18, 24, 38, 0.75);
+      --bg-surface-hover: rgba(26, 34, 52, 0.85);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+
+      --border-glass: rgba(255, 255, 255, 0.12);
+      --border-glass-light: rgba(255, 255, 255, 0.06);
+      --glass-glow: rgba(139, 92, 246, 0.25);
+
+      --accent-gradient: linear-gradient(135deg, #6366f1, #8b5cf6, #ec4899);
+      --accent-gradient-hover: linear-gradient(135deg, #4f46e5, #7c3aed, #db2777);
+      --badge-glow: rgba(168, 85, 247, 0.35);
+
+      --shadow-card: 0 25px 60px -15px rgba(0, 0, 0, 0.65), 0 0 50px -10px var(--glass-glow);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f8fafc;
+      --bg-surface: rgba(255, 255, 255, 0.88);
+      --bg-surface-hover: rgba(255, 255, 255, 0.98);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+
+      --border-glass: rgba(15, 23, 42, 0.08);
+      --border-glass-light: rgba(15, 23, 42, 0.04);
+      --glass-glow: rgba(139, 92, 246, 0.12);
+
+      --shadow-card: 0 20px 50px -10px rgba(15, 23, 42, 0.12), 0 0 30px -5px rgba(139, 92, 246, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: var(--font-body);
+      background-color: var(--bg-base);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      position: relative;
+      padding: 24px;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    /* Ambient Background Glow Blobs */
+    .aurora-container {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .aurora-blob {
+      position: absolute;
+      filter: blur(110px);
+      opacity: 0.55;
+      border-radius: 50%;
+      animation: floatBlob 18s ease-in-out infinite alternate;
+    }
+
+    .blob-1 {
+      width: 520px;
+      height: 520px;
+      background: radial-gradient(circle, #6366f1 0%, rgba(99, 102, 241, 0) 70%);
+      top: -80px;
+      left: 12%;
+      animation-duration: 16s;
+    }
+
+    .blob-2 {
+      width: 540px;
+      height: 540px;
+      background: radial-gradient(circle, #a855f7 0%, rgba(168, 85, 247, 0) 70%);
+      bottom: -120px;
+      right: 12%;
+      animation-duration: 20s;
+      animation-delay: -5s;
+    }
+
+    .blob-3 {
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, #ec4899 0%, rgba(236, 72, 153, 0) 70%);
+      top: 35%;
+      left: 55%;
+      animation-duration: 22s;
+      animation-delay: -9s;
+      opacity: 0.4;
+    }
+
+    @keyframes floatBlob {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(50px, 35px) scale(1.12);
+      }
+
+      100% {
+        transform: translate(-35px, -45px) scale(0.95);
+      }
+    }
+
+    /* Confetti Canvas */
+    #confettiCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    /* Top Controls Bar */
+    .top-controls {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .control-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-glass);
+      color: var(--text-secondary);
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      backdrop-filter: blur(12px);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .control-btn:hover {
+      background: var(--bg-surface-hover);
+      color: var(--text-primary);
+      border-color: rgba(139, 92, 246, 0.4);
+      transform: translateY(-1px);
+    }
+
+    /* Main Container & Card */
+    .card-wrapper {
+      perspective: 1200px;
+      width: 100%;
+      max-width: 520px;
+      z-index: 2;
+    }
+
+    .card {
+      position: relative;
+      background: var(--bg-surface);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid var(--border-glass);
+      border-radius: 32px;
+      padding: 56px 44px;
+      box-shadow: var(--shadow-card);
+      text-align: center;
+      transform-style: preserve-3d;
+      transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.3s ease;
+      animation: cardEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    }
+
+    @keyframes cardEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Specular glass reflection overlay */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 32px;
+      padding: 1.5px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(168, 85, 247, 0.25) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    /* Animated Appreciation Badge */
+    .badge-wrapper {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      margin: 0 auto 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .badge-ripple {
+      position: absolute;
+      inset: -14px;
+      border-radius: 50%;
+      background: var(--badge-glow);
+      animation: ripplePulse 2.8s infinite ease-out;
+      z-index: 1;
+    }
+
+    .badge-ripple:nth-child(2) {
+      inset: -5px;
+      animation-delay: 0.9s;
+      opacity: 0.7;
+    }
+
+    @keyframes ripplePulse {
+      0% {
+        transform: scale(0.85);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: scale(1.18);
+        opacity: 0.35;
+      }
+
+      100% {
+        transform: scale(1.4);
+        opacity: 0;
+      }
+    }
+
+    .badge-circle {
+      position: relative;
+      width: 96px;
+      height: 96px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 28px -4px rgba(236, 72, 153, 0.45), inset 0 2px 4px rgba(255, 255, 255, 0.4);
+      z-index: 2;
+      animation: badgePop 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards 0.15s;
+    }
+
+    @keyframes badgePop {
+      0% {
+        transform: scale(0) rotate(-45deg);
+        opacity: 0;
+      }
+
+      100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+      }
+    }
+
+    .badge-icon {
+      font-size: 42px;
+      user-select: none;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+      animation: iconFloat 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes iconFloat {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(-3px) scale(1.05);
+      }
+    }
+
+    /* Headings & Descriptions */
+    h1 {
+      font-family: var(--font-heading);
+      font-size: 46px;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text-primary) 20%, #c4b5fd 75%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    [data-theme="light"] h1 {
+      background: linear-gradient(135deg, #0f172a 30%, #7c3aed 75%, #db2777 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .appreciation-body {
+      font-size: 17px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin: 0 auto 36px;
+      font-weight: 400;
+    }
+
+    .highlight-quote {
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 3px solid #a855f7;
+      border-radius: 0 16px 16px 0;
+      padding: 16px 20px;
+      margin: 24px 0 32px;
+      font-style: italic;
+      color: var(--text-primary);
+      font-size: 15px;
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    [data-theme="light"] .highlight-quote {
+      background: rgba(139, 92, 246, 0.06);
+    }
+
+    /* Action Buttons */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (min-width: 480px) {
+      .action-group {
+        flex-direction: row;
+      }
+    }
+
+    .btn {
+      flex: 1;
+      padding: 15px 26px;
+      border-radius: 16px;
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: white;
+      box-shadow: 0 10px 25px -5px rgba(139, 92, 246, 0.45);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-gradient-hover);
+      box-shadow: 0 15px 32px -5px rgba(139, 92, 246, 0.65);
+      transform: translateY(-2px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-glass);
+      color: var(--text-primary);
+      backdrop-filter: blur(10px);
+    }
+
+    [data-theme="light"] .btn-secondary {
+      background: rgba(15, 23, 42, 0.04);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(168, 85, 247, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary:active {
+      transform: translateY(0);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 9999px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+      z-index: 100;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      .card {
+        padding: 42px 24px;
+        border-radius: 26px;
+      }
+
+      h1 {
+        font-size: 36px;
+      }
+
+      .appreciation-body {
+        font-size: 15px;
+      }
+
+      .top-controls {
+        top: 16px;
+        right: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Ambient Glowing Blobs -->
+  <div class="aurora-container" aria-hidden="true">
+    <div class="aurora-blob blob-1"></div>
+    <div class="aurora-blob blob-2"></div>
+    <div class="aurora-blob blob-3"></div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Top Controls -->
+  <div class="top-controls">
+    <button class="control-btn" id="themeToggleBtn" title="Switch Theme">
+      <span id="themeIcon">☀️</span>
+      <span id="themeLabel">Light</span>
+    </button>
+  </div>
+
+  <!-- Main Card Container -->
+  <div class="card-wrapper" id="cardWrapper">
+    <main class="card" id="mainCard">
+
+      <!-- Appreciation Badge -->
+      <div class="badge-wrapper">
+        <div class="badge-ripple"></div>
+        <div class="badge-ripple"></div>
+        <div class="badge-circle">
+          <span class="badge-icon">✨</span>
+        </div>
+      </div>
+
+      <!-- Pure Thank You Message -->
+      <h1>HELLO CUTUUUUU!</h1>
+
+
+
+
+
+
+      <!-- Action Buttons -->
+      <div class="action-group">
+        <button class="btn btn-primary" id="celebrateBtn" type="button">
+          <span>Celebrate</span>
+          <span>🎉</span>
+        </button>
+        <button class="btn btn-secondary" id="copyNoteBtn" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span>Copy Message</span>
+        </button>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toastMessage" role="status" aria-live="polite">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5">
+      <path d="M20 6L9 17l-5-5" />
+    </svg>
+    <span id="toastText">Message copied to clipboard!</span>
+  </div>
+
+  <script>
+    // --- 1. Toast Notification Helper ---
+    const toast = document.getElementById('toastMessage');
+    const toastText = document.getElementById('toastText');
+    let toastTimeout = null;
+
+    function showToast(message) {
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastText.textContent = message;
+      toast.classList.add('show');
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2800);
+    }
+
+    // --- 2. Copy Message Action ---
+    document.getElementById('copyNoteBtn').addEventListener('click', () => {
+      const messageText = "Thank you! Your time, patience, and support are truly appreciated. Thank you for your kindness and for making such a positive difference.";
+      navigator.clipboard.writeText(messageText).then(() => {
+        showToast('Appreciation note copied to clipboard!');
+      }).catch(() => {
+        showToast('Message copied!');
+      });
+    });
+
+    // --- 3. Dark / Light Theme Toggle ---
+    const htmlEl = document.documentElement;
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeLabel = document.getElementById('themeLabel');
+
+    themeToggleBtn.addEventListener('click', () => {
+      const isDark = htmlEl.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      htmlEl.setAttribute('data-theme', newTheme);
+      themeIcon.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      themeLabel.textContent = newTheme === 'dark' ? 'Light' : 'Dark';
+    });
+
+    // --- 4. Subtle 3D Card Tilt Effect ---
+    const card = document.getElementById('mainCard');
+    const wrapper = document.getElementById('cardWrapper');
+
+    if (window.matchMedia('(pointer: fine)').matches) {
+      wrapper.addEventListener('mousemove', (e) => {
+        const rect = wrapper.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -5.5;
+        const rotateY = ((x - centerX) / centerX) * 5.5;
+
+        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
+
+      wrapper.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+      });
+    }
+
+    // --- 5. Celebration Confetti Engine ---
+    const canvas = document.getElementById('confettiCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    const colors = ['#6366f1', '#a855f7', '#ec4899', '#f43f5e', '#fbbf24', '#38bdf8'];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class ConfettiParticle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 8 + 5;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.speedX = (Math.random() - 0.5) * 12;
+        this.speedY = Math.random() * -12 - 4;
+        this.gravity = 0.32;
+        this.rotation = Math.random() * 360;
+        this.rotationSpeed = (Math.random() - 0.5) * 10;
+        this.opacity = 1;
+        this.shape = Math.random() > 0.4 ? 'rect' : 'circle';
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.speedY += this.gravity;
+        this.rotation += this.rotationSpeed;
+        this.opacity -= 0.009;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate((this.rotation * Math.PI) / 180);
+        ctx.globalAlpha = Math.max(0, this.opacity);
+        ctx.fillStyle = this.color;
+
+        if (this.shape === 'rect') {
+          ctx.fillRect(-this.size / 2, -this.size / 4, this.size, this.size / 2);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, this.size / 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    function triggerConfetti(originX, originY, count = 75) {
+      for (let i = 0; i < count; i++) {
+        particles.push(new ConfettiParticle(originX, originY));
+      }
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.update();
+        p.draw();
+        if (p.opacity <= 0 || p.y > canvas.height + 20) {
+          particles.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(animateConfetti);
+    }
+    animateConfetti();
+
+    // Trigger celebration on load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        triggerConfetti(window.innerWidth * 0.4, window.innerHeight * 0.4, 50);
+        triggerConfetti(window.innerWidth * 0.6, window.innerHeight * 0.4, 50);
+      }, 350);
+    });
+
+    // Celebrate button click
+    document.getElementById('celebrateBtn').addEventListener('click', (e) => {
+      const rect = e.target.getBoundingClientRect();
+      triggerConfetti(rect.left + rect.width / 2, rect.top + rect.height / 2, 85);
+      showToast('Thank you so much! 🎉');
+    });
+  </script>
+</body>
+
+</html>
